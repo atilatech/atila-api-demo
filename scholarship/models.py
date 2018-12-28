@@ -1,6 +1,20 @@
-from django.db import models
+import time
+from datetime import date, datetime
+from decimal import Decimal
 
+import pytz
+from django.contrib.postgres.fields import JSONField, ArrayField
+from django.db import models
+from django.utils import timezone
+from django.utils.text import slugify
+from multiselectfield import MultiSelectField
+
+from helpers.constants import get_tuple, FILTER_TYPES, EDUCATION_FIELDS, EDUCATION_LEVELS, FUNDING_TYPES
 # Create your models here.
+from helpers.models import HelperMethods, City, Province, Country
+from userprofile.models import UserProfile
+
+DEFAULT_SCHOLARSHIP_IMAGE = "https://ucarecdn.com/f9a8fb7d-e7c2-43bc-8177-47638c801fb3/"
 
 
 class Scholarship(models.Model):
@@ -38,7 +52,7 @@ class Scholarship(models.Model):
     funding_amount = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0.00'))
     # better than float field because of exactness, and more human intuitive arithmetic
 
-    funding_type = MultiSelectField(choices=FUNDING_TYPES, default=FUNDING_TYPES[0][0], blank=True, null=True)
+    funding_type = MultiSelectField(choices=FUNDING_TYPES, default=FUNDING_TYPES, blank=True, null=True)
 
     city = models.ManyToManyField(City, blank=True)
     # The following 2 fields may be redundant once we already have city,
@@ -156,7 +170,7 @@ class Scholarship(models.Model):
 
         locations = []
 
-        if self.id: # need id before you can use related fields
+        if self.id:  # need id before you can use related fields
             for location_type in location_types:
                 location = getattr(self, location_type)
                 location = location.all()
@@ -171,18 +185,3 @@ class Scholarship(models.Model):
             self.save()
 
         return self.keywords
-
-    def get_similar(self, *args, **kwargs):
-
-        print('self.get_similar()', self)
-        get_keywords_nltk(self)
-        scholarships = Scholarship.objects.all()
-        for scholarship in scholarships:
-            if scholarship.pk == self.pk:
-                continue
-            score_scholarship_simlarity(self, scholarship)
-
-        self.metadata_private['similar_scholarships'] = sorted(
-            self.metadata_private['similar_scholarships'], key=lambda k: k['match_score'], reverse=True)
-        self.save()
-        return self.metadata_private['similar_scholarships']

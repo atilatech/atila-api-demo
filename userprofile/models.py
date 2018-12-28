@@ -1,6 +1,24 @@
-from django.db import models
+import logging
+from datetime import datetime
+from decimal import Decimal
 
+import pytz
+from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField, ArrayField
+from django.db import models
 # Create your models here.
+from django.utils import timezone
+
+from helpers.constants import get_tuple, EDUCATION_FIELDS, EDUCATION_LEVELS
+from helpers.models import HelperMethods, Country, Province, City
+
+logger = logging.getLogger(__name__)
+
+
+class UserProfileManager(models.Manager):
+    def get_by_natural_key(self, username):
+        return self.get(username=username)
+
 
 class UserProfile(models.Model):
     """ Profiles created by SMB and sponsors."""
@@ -36,7 +54,7 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=128)
     birth_date = models.DateField(blank=True, null=True)
 
-    gender = models.CharField(blank=True, null=True, max_length=1000, choices=GENDERS, default='')
+    gender = models.CharField(blank=True, null=True, max_length=1000, choices=['Male', 'Female'], default='')
 
     profile_pic_url = models.URLField(blank=True,
                                       default=HelperMethods.default_profile_pic_url, max_length=700)
