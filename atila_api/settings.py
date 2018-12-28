@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ajlfu*@1d8%@bqu=$b)iepc+r5yxit2s=anx43up1%sn7y1cgq'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 POSTGRES_USERNAME = os.getenv('POSTGRES_USERNAME')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
