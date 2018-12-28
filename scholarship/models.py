@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from multiselectfield import MultiSelectField
 
-from helpers.constants import get_tuple, FILTER_TYPES, EDUCATION_FIELDS, EDUCATION_LEVELS, FUNDING_TYPES
+from helpers.constants import get_tuple, FILTER_TYPES, FUNDING_TYPES
 # Create your models here.
 from helpers.models import HelperMethods, City, Province, Country
 from userprofile.models import UserProfile
@@ -52,7 +52,8 @@ class Scholarship(models.Model):
     funding_amount = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0.00'))
     # better than float field because of exactness, and more human intuitive arithmetic
 
-    funding_type = MultiSelectField(choices=FUNDING_TYPES, default=FUNDING_TYPES, blank=True, null=True)
+    funding_type = MultiSelectField(choices=get_tuple('FUNDING_TYPES'), default=FUNDING_TYPES[0][0], blank=True,
+                                    null=True)
 
     city = models.ManyToManyField(City, blank=True)
     # The following 2 fields may be redundant once we already have city,
@@ -83,10 +84,12 @@ class Scholarship(models.Model):
                                   blank=True, null=True)
     eligible_programs = ArrayField(models.CharField(blank=True, null=True, max_length=1000), default=list,
                                    blank=True, null=True)
-    education_field = ArrayField(models.CharField(blank=True, null=True, max_length=1000, choices=EDUCATION_FIELDS),
-                                 default=list, blank=True, null=True)
-    education_level = ArrayField(models.CharField(blank=True, null=True, max_length=1000, choices=EDUCATION_LEVELS),
-                                 default=list, blank=True, null=True)
+    education_field = ArrayField(
+        models.CharField(blank=True, null=True, max_length=1000, choices=get_tuple('EDUCATION_FIELDS')),
+        default=list, blank=True, null=True)
+    education_level = ArrayField(
+        models.CharField(blank=True, null=True, max_length=1000, choices=get_tuple('EDUCATION_LEVELS')),
+        default=list, blank=True, null=True)
 
     academic_average = models.DecimalField(max_digits=19, decimal_places=2, blank=True, null=True)
 
@@ -185,3 +188,31 @@ class Scholarship(models.Model):
             self.save()
 
         return self.keywords
+
+
+# https://docs.djangoproject.com/en/1.11/topics/db/models/#intermediary-manytomany
+class Application(models.Model):
+    """ Intermediary model (association table) linking applicants (UserProfile) and scholarships."""
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    scholarship = models.ForeignKey(Scholarship, on_delete=models.CASCADE)
+
+    # todo how should we handle on_delete, will be models.CASCADE by default
+    # https://stackoverflow.com/questions/38388423/what-does-on-delete-do-on-django-models
+    # https://stackoverflow.com/a/8543956
+
+    app_url = models.URLField(blank=True, max_length=500)
+    date_created = models.DateTimeField(default=timezone.now)
+
+    responses = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)
+    userprofile_responses = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)
+    document_urls = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)
+
+    def __str__(self):  # For Python 2, use __str__ on Python 3
+        obj_as_str = "Applicant: " + str(self.user) \
+                     + " | Scholarship: " + str(self.scholarship)
+        return obj_as_str
+
+    class Meta:
+        ordering = ['scholarship', '-date_created']
+
+    metadata = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)

@@ -9,7 +9,7 @@ from django.db import models
 # Create your models here.
 from django.utils import timezone
 
-from helpers.constants import get_tuple, EDUCATION_FIELDS, EDUCATION_LEVELS
+from helpers.constants import get_tuple
 from helpers.models import HelperMethods, Country, Province, City
 
 logger = logging.getLogger(__name__)
@@ -40,12 +40,12 @@ class UserProfile(models.Model):
     # https://stackoverflow.com/questions/31412377/non-primary-foreign-keys-in-django
     # https://stackoverflow.com/questions/30100553/multiple-foreign-keys-to-the-same-id-django-design-patterns
     referred_by = models.ForeignKey('UserProfile', to_field="username", db_column="userprofile_username", default=None,
-                                    null=True, blank=True)
+                                    null=True, blank=True, on_delete=models.SET_NULL)
 
-    saved_scholarships = models.ManyToManyField('Scholarship', blank=True)
+    saved_scholarships = models.ManyToManyField('scholarship.Scholarship', blank=True)
     saved_scholarships_metadata = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)
 
-    scholarships_not_interested = models.ManyToManyField('Scholarship',
+    scholarships_not_interested = models.ManyToManyField('scholarship.Scholarship',
                                                          blank=True, related_name='user_scholarships_not_interested')
 
     scholarships_match_score = JSONField(default=HelperMethods.empty_dict, blank=True, null=True)
@@ -54,7 +54,7 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=128)
     birth_date = models.DateField(blank=True, null=True)
 
-    gender = models.CharField(blank=True, null=True, max_length=1000, choices=['Male', 'Female'], default='')
+    gender = models.CharField(blank=True, null=True, max_length=1000, choices=get_tuple('GENDER'), default='')
 
     profile_pic_url = models.URLField(blank=True,
                                       default=HelperMethods.default_profile_pic_url, max_length=700)
@@ -106,10 +106,12 @@ class UserProfile(models.Model):
     eligible_programs = ArrayField(models.CharField(blank=True, null=True, max_length=1000),
                                    default=list, blank=True, null=True)
 
-    education_field = ArrayField(models.CharField(blank=True, null=True, max_length=1000, choices=EDUCATION_FIELDS),
-                                 default=list, blank=True, null=True)
-    education_level = ArrayField(models.CharField(blank=True, null=True, max_length=1000, choices=EDUCATION_LEVELS),
-                                 default=list, blank=True, null=True)
+    education_field = ArrayField(
+        models.CharField(blank=True, null=True, max_length=1000, choices=get_tuple('EDUCATION_FIELDS')),
+        default=list, blank=True, null=True)
+    education_level = ArrayField(
+        models.CharField(blank=True, null=True, max_length=1000, choices=get_tuple('EDUCATION_LEVELS')),
+        default=list, blank=True, null=True)
     grade_level = models.CharField(blank=True, null=True, max_length=1000)
     # todo ability to add multiple, resume, transcripts and reference letters
     resume = models.URLField(blank=True, null=True, max_length=1000)

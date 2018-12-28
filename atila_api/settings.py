@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'scholarship.apps.ScholarshipConfig',
+    'userprofile.apps.UserprofileConfig',
+    'helpers.apps.HelpersConfig',
 ]
 
 MIDDLEWARE = [

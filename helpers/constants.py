@@ -1674,36 +1674,55 @@ FILTER_TYPES = [
     'province',
 ]
 
+GENDERS = [
+    'Male',
+    'Female',
+    'Other',
+]
+
 
 def get_tuple(constant):
-    pass
-    # if constant == 'ETHNICITY':
-    #     list_tuple = ((item, item) for item in ETHNICITIES)
-    #     return list_tuple
-    # if constant == 'COUNTRIES':
-    #     list_tuple = ((item, item) for item in COUNTRIES)
-    #     return list_tuple
-    # if constant == 'LANGUAGE':
-    #     list_tuple = ((item, item) for item in LANGUAGE)
-    #     return list_tuple
-    # if constant == 'RELIGION':
-    #     list_tuple = ((item, item) for item in RELIGION)
-    #     return list_tuple
-    # if constant == 'ACTIVITIES':
-    #     list_tuple = ((item, item) for item in ACTIVITIES)
-    #     return list_tuple
-    # if constant == 'SPORTS':
-    #     list_tuple = ((item, item) for item in SPORTS)
-    #     return list_tuple
-    # if constant == 'DISABILITY':
-    #     list_tuple = ((item, item) for item in DISABILITY)
-    #     return list_tuple
-    # if constant == 'SCHOOL':
-    #     list_tuple = ((item, item) for item in SCHOOLS)
-    #     return list_tuple
-    # if constant == 'MAJOR':
-    #     list_tuple = ((item, item) for item in MAJORS)
-    #     return list_tuple
+    if constant == 'ETHNICITY':
+        list_tuple = ((item, item) for item in ETHNICITIES)
+        return list_tuple
+    if constant == 'COUNTRIES':
+        list_tuple = ((item, item) for item in COUNTRIES)
+        return list_tuple
+    if constant == 'LANGUAGE':
+        list_tuple = ((item, item) for item in LANGUAGE)
+        return list_tuple
+    if constant == 'RELIGION':
+        list_tuple = ((item, item) for item in RELIGION)
+        return list_tuple
+    if constant == 'ACTIVITIES':
+        list_tuple = ((item, item) for item in ACTIVITIES)
+        return list_tuple
+    if constant == 'SPORTS':
+        list_tuple = ((item, item) for item in SPORTS)
+        return list_tuple
+    if constant == 'DISABILITY':
+        list_tuple = ((item, item) for item in DISABILITY)
+        return list_tuple
+    if constant == 'SCHOOL':
+        list_tuple = ((item, item) for item in SCHOOLS)
+        return list_tuple
+    if constant == 'MAJOR':
+        list_tuple = ((item, item) for item in MAJORS)
+        return list_tuple
+    if constant == 'GENDERS':
+        list_tuple = ((item, item) for item in GENDERS)
+        return list_tuple
+    if constant == 'FUNDING_TYPES':
+        list_tuple = ((item, item) for item in FUNDING_TYPES)
+        return list_tuple
+    if constant == 'EDUCATION_LEVELS':
+        list_tuple = ((item, item) for item in EDUCATION_LEVELS)
+        return list_tuple
+    if constant == 'EDUCATION_LEVELS':
+        list_tuple = ((item, item) for item in EDUCATION_LEVELS)
+        return list_tuple
+    else:
+        return ()
 
 
 def get_rand_image():

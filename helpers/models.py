@@ -4,6 +4,7 @@ from django.db import models
 
 
 # Steps to follow when adding a new model
+# 0. Make sure the app is registered in installed_apps in your settings.py
 # 1. Migrate your changes: python manage.py makemigrations && python manage.py migrate && python manage.py runserver
 # 2. Register the new view, serializer and URL
 # 3. Register the model to admin.
