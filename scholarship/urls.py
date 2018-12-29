@@ -1,3 +1,5 @@
+from django.conf.urls import url
+from django.urls import include
 from rest_framework import routers
 
 from scholarship.views import ScholarshipViewSet
@@ -11,4 +13,6 @@ router.register(r'', ScholarshipViewSet)
 # todo access urls from root api/
 # todo read about best practices for api url naming conventions
 
-urlpatterns = []
+urlpatterns = [
+    url(r'^', include(router.urls)),  # moved to bottom to use longest prefix matching for url (Nov 3 2017)
+]

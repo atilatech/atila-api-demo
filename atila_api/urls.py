@@ -16,10 +16,14 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
+
+router = routers.DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'^scholarships/', include('scholarship.urls')),
-    path(r'^user-profiles/', include('userprofile.urls')),
-    url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^api/scholarships/', include('scholarship.urls')),
+    url(r'^api/user-profiles/', include('userprofile.urls')),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^api', include(router.urls)),
 ]
