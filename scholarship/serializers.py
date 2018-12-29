@@ -2,12 +2,12 @@
 # https://stackoverflow.com/questions/30013284/django-rest-framework-writable-nested-field-using-create
 # https://www.google.com/search?q=write+a+create+method+for+nestable+fields&oq=write+a+create+method+for+nestable+fields&aqs=chrome..69i57.6732j0j4&sourceid=chrome&ie=UTF-8
 from rest_framework import serializers
+from rest_framework.utils import model_meta
 
 from helpers.constants import FUNDING_TYPES
 from helpers.serializers import CitySerializer, ProvinceSerializer, CountrySerializer
 from scholarship.models import Scholarship
-from rest_framework.utils import model_meta
-from rest_framework.compat import set_many
+
 
 class ScholarshipSerializer(serializers.ModelSerializer):
     # city = serializers.MultipleChoiceField(choices=CITY_CHOICES)
@@ -27,14 +27,13 @@ class ScholarshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scholarship
         # fields = '__all__'
-        exclude = ('applicants','metadata_private')
+        exclude = ('applicants', 'metadata_private')
 
     def create(self, validated_data):
         city = validated_data.pop('city', None)
         province = validated_data.pop('province', None)
         country = validated_data.pop('country', None)
         instance = Scholarship.objects.create(**validated_data)
-
 
         instance.city = city if city else []
         instance.province = province if city else []
