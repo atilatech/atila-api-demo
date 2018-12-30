@@ -4,7 +4,7 @@
 from rest_framework import serializers
 from rest_framework.utils import model_meta
 
-from helpers.constants import FUNDING_TYPES
+from helpers.constants import FUNDING_TYPES, get_tuple
 from helpers.serializers import CitySerializer, ProvinceSerializer, CountrySerializer
 from scholarship.models import Scholarship
 
@@ -23,7 +23,17 @@ class ScholarshipSerializer(serializers.ModelSerializer):
     education_level = serializers.ListField(child=serializers.CharField(max_length=200, allow_blank=True))
     education_field = serializers.ListField(child=serializers.CharField(max_length=200, allow_blank=True))
 
-    funding_type = serializers.MultipleChoiceField(choices=FUNDING_TYPES, required=False)
+    ethnicity = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('ETHNICITY')))
+    heritage = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('COUNTRIES')))
+    citizenship = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('COUNTRIES')))
+    religion = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('RELIGION')))
+    activities = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('ACTIVITIES')))
+    sports = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('SPORTS')))
+    disability = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('DISABILITY')))
+    language = serializers.MultipleChoiceField(allow_blank=True, choices=list(get_tuple('LANGUAGE')))
+
+    funding_type = serializers.MultipleChoiceField(choices=list(get_tuple('FUNDING_TYPES')), allow_blank=True)
+
     extra_questions = serializers.JSONField(required=False)
     # applicants = serializers.PrimaryKeyRelatedField(many=True, read_only=True, allow_null=True, required=False)
     city = CitySerializer(many=True, required=False)
@@ -31,8 +41,6 @@ class ScholarshipSerializer(serializers.ModelSerializer):
     country = CountrySerializer(many=True, required=False)
     name = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
-
-    ethnicity = serializers.ListField(child=serializers.CharField(max_length=200, allow_blank=True))
 
     class Meta:
         model = Scholarship
