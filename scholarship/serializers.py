@@ -9,6 +9,14 @@ from helpers.serializers import CitySerializer, ProvinceSerializer, CountrySeria
 from scholarship.models import Scholarship
 
 
+class StringListField(serializers.ListField):
+    child = serializers.CharField()
+
+    def __init__(self, choices):
+        child = serializers.CharField()
+
+        super().__init__()
+
 class ScholarshipSerializer(serializers.ModelSerializer):
     # city = serializers.MultipleChoiceField(choices=CITY_CHOICES)
     # province = serializers.MultipleChoiceField(choices=PROVINCE_CHOICES)
@@ -23,6 +31,8 @@ class ScholarshipSerializer(serializers.ModelSerializer):
     country = CountrySerializer(many=True, required=False)
     name = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
+
+    ethnicity = serializers.ListField(child=serializers.CharField(max_length=200, allow_blank=True))
 
     class Meta:
         model = Scholarship

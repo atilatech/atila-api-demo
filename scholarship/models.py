@@ -17,7 +17,14 @@ from userprofile.models import UserProfile
 DEFAULT_SCHOLARSHIP_IMAGE = "https://ucarecdn.com/f9a8fb7d-e7c2-43bc-8177-47638c801fb3/"
 
 
+class ScholarshipManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
+
+
 class Scholarship(models.Model):
+    objects = ScholarshipManager()
+
     owner = models.ForeignKey(UserProfile, null=True, blank=True,
                               related_name='scholarship_owner',
                               on_delete=models.SET_NULL, )  # one-to-many, each scholarship is owned by one UserProfile
