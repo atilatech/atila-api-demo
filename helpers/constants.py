@@ -1682,7 +1682,6 @@ GENDERS = [
 
 
 def get_tuple(constant):
-    # return
     if constant == 'ETHNICITY':
         list_tuple = ((item, item) for item in ETHNICITIES)
         return list_tuple
